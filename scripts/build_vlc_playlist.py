@@ -16,6 +16,7 @@ UA = "radios-cordoba-vlc/1.0"
 
 # Curated direct audio overrides (HTML players / status pages → Icecast/STW/etc.)
 DIRECT_BY_FREQ: dict[str, str] = {
+    "90.1": "https://streaming.dainusradio.com:9848/stream",
     "90.5": "https://streaming01.shockmedia.com.ar:10603/stream",
     "90.7": "https://streaming01.shockmedia.com.ar:10714/stream",
     "91.9": "https://playerservices.streamtheworld.com/api/livestream-redirect/CADENAHEAT_SC",
@@ -25,6 +26,8 @@ DIRECT_BY_FREQ: dict[str, str] = {
     "96.5": "https://streaming01.shockmedia.com.ar:10945/stream",
     "97.1": "https://nl.digitalrm.pt:8050/stream",
     "97.9": "https://playerservices.streamtheworld.com/api/livestream-redirect/AM790_56_SC",
+    "99.3": "https://sonic.cloudstreaming.eu/9992/stream",
+    "100.1": "https://sa.mp3.icecast.magma.edge-access.net/sc_rad7",
     "100.5": "https://playerservices.streamtheworld.com/api/livestream-redirect/RADIO3_SC",
     "101.1": "https://01.solumedia.com.ar:8516/stream",
     "101.3": "https://streaming.gostreaming.com.ar:10929/stream",
@@ -36,9 +39,10 @@ DIRECT_BY_FREQ: dict[str, str] = {
     "103.9": "https://server.laradio.online/proxy/javier_diaz01?mp=/stream",
     "104.1": "https://playerservices.streamtheworld.com/api/livestream-redirect/MIA_SC",
     "104.5": "https://radios.solumedia.com:10998/stream",
-    "104.7": "http://server1.dainusradio.com:2341/stream",
+    "104.7": "https://streaming.dainusradio.com:2341/stream",
+    "105.5": "https://streaming01.shockmedia.com.ar/9676/stream",
     "105.9": "https://streaming.radiosenlinea.com.ar/9574/stream",
-    "106.9": "http://streaming01.shockmedia.com.ar:9060/stream",
+    "106.9": "https://streaming01.shockmedia.com.ar/9060/stream",
     "107.5": "https://sonic.host-live.com/8250/stream",
 }
 

@@ -38,7 +38,7 @@ window.STATIONS = [
   {
     "freq": 90.1,
     "name": "Radio Sur",
-    "url": "http://server1.dainusradio.com:9848/;"
+    "url": "https://streaming.dainusradio.com:9848/stream"
   },
   {
     "freq": 90.5,
@@ -148,12 +148,12 @@ window.STATIONS = [
   {
     "freq": 99.3,
     "name": "Radio Impacto",
-    "url": "http://streaming01.shockmedia.com.ar:9450/stream"
+    "url": "https://sonic.cloudstreaming.eu/9992/stream"
   },
   {
     "freq": 100.1,
     "name": "Radio Nacional Córdoba",
-    "url": "http://sa.mp3.icecast.magma.edge-access.net:7200/sc_rad7"
+    "url": "https://sa.mp3.icecast.magma.edge-access.net/sc_rad7"
   },
   {
     "freq": 100.5,
@@ -213,7 +213,7 @@ window.STATIONS = [
   {
     "freq": 104.7,
     "name": "Radio Sucesos",
-    "url": "http://server1.dainusradio.com:2341/stream"
+    "url": "https://streaming.dainusradio.com:2341/stream"
   },
   {
     "freq": 105.3,
@@ -223,7 +223,7 @@ window.STATIONS = [
   {
     "freq": 105.5,
     "name": "Las Rosas",
-    "url": "http://streaming01.shockmedia.com.ar:9676/stream"
+    "url": "https://streaming01.shockmedia.com.ar/9676/stream"
   },
   {
     "freq": 105.9,
@@ -238,7 +238,7 @@ window.STATIONS = [
   {
     "freq": 106.9,
     "name": "Modo Radio",
-    "url": "http://streaming01.shockmedia.com.ar:9060/stream"
+    "url": "https://streaming01.shockmedia.com.ar/9060/stream"
   },
   {
     "freq": 107.3,

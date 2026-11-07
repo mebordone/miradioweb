@@ -23,7 +23,7 @@ https://stream.qualityradio.com.ar/qualityx
 http://reseller01.shockmedia.com.ar:9396/;stream
 
 #EXTINF:-1,90.1 Radio Sur
-http://server1.dainusradio.com:9848/;
+https://streaming.dainusradio.com:9848/stream
 
 #EXTINF:-1,90.5 Quality FM
 https://streaming01.shockmedia.com.ar:10603/stream
@@ -89,10 +89,10 @@ https://radio10.stweb.tv/radio10/live/playlist.m3u8
 https://playerservices.streamtheworld.com/api/livestream-redirect/LA_RED_AM910AAC_SC
 
 #EXTINF:-1,99.3 Radio Impacto
-http://streaming01.shockmedia.com.ar:9450/stream
+https://sonic.cloudstreaming.eu/9992/stream
 
 #EXTINF:-1,100.1 Radio Nacional Córdoba
-http://sa.mp3.icecast.magma.edge-access.net:7200/sc_rad7
+https://sa.mp3.icecast.magma.edge-access.net/sc_rad7
 
 #EXTINF:-1,100.5 Cadena 3
 https://playerservices.streamtheworld.com/api/livestream-redirect/RADIO3_SC
@@ -128,13 +128,13 @@ https://playerservices.streamtheworld.com/api/livestream-redirect/MIA_SC
 https://radios.solumedia.com:10998/stream
 
 #EXTINF:-1,104.7 Radio Sucesos
-http://server1.dainusradio.com:2341/stream
+https://streaming.dainusradio.com:2341/stream
 
 #EXTINF:-1,105.3 Radio Jaja
 https://streaming5.locucionar.com/proxy/radiojaja?mp=/stream
 
 #EXTINF:-1,105.5 Las Rosas
-http://streaming01.shockmedia.com.ar:9676/stream
+https://streaming01.shockmedia.com.ar/9676/stream
 
 #EXTINF:-1,105.9 Activa
 https://streaming.radiosenlinea.com.ar/9574/stream
@@ -143,7 +143,7 @@ https://streaming.radiosenlinea.com.ar/9574/stream
 https://servidor1.hostradios.com:8132/stream
 
 #EXTINF:-1,106.9 Modo Radio
-http://streaming01.shockmedia.com.ar:9060/stream
+https://streaming01.shockmedia.com.ar/9060/stream
 
 #EXTINF:-1,107.3 Ranquel FM
 https://server6.hostradios.com/8556/stream

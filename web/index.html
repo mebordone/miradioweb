@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dial FM Córdoba</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="shell" data-power="off" data-tuning="0">
+    <header class="brand">
+      <p class="brand__mark">Dial FM</p>
+      <p class="brand__place">Córdoba Capital</p>
+    </header>
+
+    <section class="display" aria-live="polite">
+      <p class="display__band">FM</p>
+      <p class="display__freq" id="freq">—.—</p>
+      <p class="display__unit">MHz</p>
+      <p class="display__name" id="name">Radio apagada</p>
+      <p class="display__status" id="status">Encendé para sintonizar</p>
+      <div class="display__bars" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+    </section>
+
+    <nav class="controls" aria-label="Controles de radio">
+      <button type="button" class="btn btn--seek" id="prev" aria-label="Estación anterior" disabled>
+        <span aria-hidden="true">◀</span>
+        <small>Ant</small>
+      </button>
+      <button type="button" class="btn btn--power" id="power" aria-pressed="false" aria-label="Encender o apagar">
+        <span class="btn--power__dot" aria-hidden="true"></span>
+        <small>Power</small>
+      </button>
+      <button type="button" class="btn btn--seek" id="next" aria-label="Estación siguiente" disabled>
+        <span aria-hidden="true">▶</span>
+        <small>Sig</small>
+      </button>
+    </nav>
+
+    <p class="hint">Espacio = power · ← → = dial</p>
+
+    <details class="station-list" id="station-list">
+      <summary class="station-list__summary">
+        <span>Emisoras</span>
+        <span class="station-list__count" id="station-count">0</span>
+      </summary>
+      <div class="station-list__scroll" role="listbox" aria-label="Lista de emisoras FM" id="station-listbox"></div>
+    </details>
+  </main>
+
+  <audio id="stream" preload="none" crossorigin="anonymous"></audio>
+  <audio id="static" preload="auto" loop src="assets/sintonia.wav?v=2"></audio>
+
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js" defer></script>
+  <script src="stations.js" defer></script>
+  <script src="app.js" defer></script>
+</body>
+</html>

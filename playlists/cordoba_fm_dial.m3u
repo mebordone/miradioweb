@@ -1,0 +1,158 @@
+#EXTM3U
+# Playlist FM Ciudad de Córdoba — orden de dial
+
+#EXTINF:-1,87.9 Rivadavia Córdoba
+https://streaming.gostreaming.com.ar:10990/stream
+
+#EXTINF:-1,87.9 Rock & Pop Córdoba
+https://playerservices.streamtheworld.com/api/livestream-redirect/ROCKANDPOP.mp3
+
+#EXTINF:-1,88.5 Radio Universidad
+https://radios.solumedia.com:10976/stream
+
+#EXTINF:-1,88.9 Pobre Johnny
+https://stream4.suenas.net/pobrejohnny
+
+#EXTINF:-1,89.3 Máxima
+https://streaming01.shockmedia.com.ar:10743/stream.mp4
+
+#EXTINF:-1,89.7 Quality X
+https://stream.qualityradio.com.ar/qualityx
+
+#EXTINF:-1,89.9 Radio Génesis
+http://reseller01.shockmedia.com.ar:9396/;stream
+
+#EXTINF:-1,90.1 Radio Sur
+http://server1.dainusradio.com:9848/;
+
+#EXTINF:-1,90.5 Quality FM
+https://streaming01.shockmedia.com.ar:10603/stream
+
+#EXTINF:-1,90.7 Punto a Punto
+https://streaming01.shockmedia.com.ar:10714/stream
+
+#EXTINF:-1,91.1 Gamma
+https://streaming01.shockmedia.com.ar/8880/stream
+
+#EXTINF:-1,91.9 Cadena Heat
+https://playerservices.streamtheworld.com/api/livestream-redirect/CADENAHEAT_SC
+
+#EXTINF:-1,92.3 La Popu
+https://liveradio.mediainbox.net/popular.mp3
+
+#EXTINF:-1,92.7 Libre
+https://streaming6.locucionar.com:24404/stream
+
+#EXTINF:-1,93.1 Dale
+https://streaming01.shockmedia.com.ar:10891/;
+
+#EXTINF:-1,93.5 Radio Rivadavia Córdoba
+https://playerservices.streamtheworld.com/api/livestream-redirect/RIVADAVIAAAC_SC
+
+#EXTINF:-1,93.9 La Quinta Pata
+http://server3.veemesoft.com.ar:26429/;
+
+#EXTINF:-1,94.3 Radio UTN
+https://01.solumedia.com.ar:8200/stream
+
+#EXTINF:-1,94.7 Loca Suelta
+https://stream4.suenas.net/locasuelta
+
+#EXTINF:-1,95.5 Cosquín Rock
+https://playerservices.streamtheworld.com/api/livestream-redirect/cosquinrock.mp3
+
+#EXTINF:-1,95.9 Play
+https://ohradio.cc/9672/stream
+
+#EXTINF:-1,96.1 Shopping Classics
+https://stream4.suenas.net/shoppingclassics
+
+#EXTINF:-1,96.5 Radio Suquía
+https://streaming01.shockmedia.com.ar:10945/stream
+
+#EXTINF:-1,96.7 Radio de Folklore
+https://stm17.xcast.com.br:7296/stream
+
+#EXTINF:-1,97.1 Red Aleluya Córdoba
+https://nl.digitalrm.pt:8050/stream
+
+#EXTINF:-1,97.7 Aspen Córdoba
+https://playerservices.streamtheworld.com/api/livestream-redirect/ASPEN_SC
+
+#EXTINF:-1,97.9 Radio Mitre Córdoba
+https://playerservices.streamtheworld.com/api/livestream-redirect/AM790_56_SC
+
+#EXTINF:-1,98.7 Radio 10 Córdoba
+https://radio10.stweb.tv/radio10/live/playlist.m3u8
+
+#EXTINF:-1,98.9 La Red Córdoba
+https://playerservices.streamtheworld.com/api/livestream-redirect/LA_RED_AM910AAC_SC
+
+#EXTINF:-1,99.3 Radio Impacto
+http://streaming01.shockmedia.com.ar:9450/stream
+
+#EXTINF:-1,100.1 Radio Nacional Córdoba
+http://sa.mp3.icecast.magma.edge-access.net:7200/sc_rad7
+
+#EXTINF:-1,100.5 Cadena 3
+https://playerservices.streamtheworld.com/api/livestream-redirect/RADIO3_SC
+
+#EXTINF:-1,101.1 Presencia FM
+https://01.solumedia.com.ar:8516/stream
+
+#EXTINF:-1,101.3 Showsport Radio
+https://streaming.gostreaming.com.ar:10929/stream
+
+#EXTINF:-1,101.5 Radio María
+https://dreamsiteradiocp2.com/proxy/rmargentina2?mp=%2Fstream
+
+#EXTINF:-1,101.9 Radio Visión / FM Visión
+https://sslstream.online:7106/stream
+
+#EXTINF:-1,102.3 Más que música
+https://radios.solumedia.com:6276/stream
+
+#EXTINF:-1,102.9 La 100 Córdoba
+https://playerservices.streamtheworld.com/api/livestream-redirect/FM999_56AAC_SC
+
+#EXTINF:-1,103.1 Radio Mansa
+https://stream4.suenas.net/mansa
+
+#EXTINF:-1,103.9 La Ranchada
+https://server.laradio.online/proxy/javier_diaz01?mp=/stream
+
+#EXTINF:-1,104.1 Mía
+https://playerservices.streamtheworld.com/api/livestream-redirect/MIA_SC
+
+#EXTINF:-1,104.5 FM Providencia
+https://radios.solumedia.com:10998/stream
+
+#EXTINF:-1,104.7 Radio Sucesos
+http://server1.dainusradio.com:2341/stream
+
+#EXTINF:-1,105.3 Radio Jaja
+https://streaming5.locucionar.com/proxy/radiojaja?mp=/stream
+
+#EXTINF:-1,105.5 Las Rosas
+http://streaming01.shockmedia.com.ar:9676/stream
+
+#EXTINF:-1,105.9 Activa
+https://streaming.radiosenlinea.com.ar/9574/stream
+
+#EXTINF:-1,106.3 Gamba
+https://servidor1.hostradios.com:8132/stream
+
+#EXTINF:-1,106.9 Modo Radio
+http://streaming01.shockmedia.com.ar:9060/stream
+
+#EXTINF:-1,107.3 Ranquel FM
+https://server6.hostradios.com/8556/stream
+
+#EXTINF:-1,107.5 Radio Gen
+https://sonic.host-live.com/8250/stream
+
+#EXTINF:-1,107.7 Radio Espíritu Santo
+https://01.solumedia.com.ar:7802/stream
+
+#EXTINF:-1,107.9 BBN Radio
+https://streams.radiomast.io/475ebed1-595e-4717-b888-64fe8fc6b09f

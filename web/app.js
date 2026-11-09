@@ -1,309 +1,395 @@
 (() => {
   const stations = Array.isArray(window.STATIONS) ? window.STATIONS : [];
-  const shell = document.querySelector(".shell");
-  const freqEl = document.getElementById("freq");
-  const nameEl = document.getElementById("name");
-  const statusEl = document.getElementById("status");
-  const powerBtn = document.getElementById("power");
-  const prevBtn = document.getElementById("prev");
-  const nextBtn = document.getElementById("next");
-  const streamEl = document.getElementById("stream");
-  const staticEl = document.getElementById("static");
-  const listbox = document.getElementById("station-listbox");
-  const countEl = document.getElementById("station-count");
+  const TUNE_TIMEOUT_MS = 12_000;
+  const VOLUME_KEY = "dialfm-volume";
 
-  const TUNE_TIMEOUT_MS = 12000;
+  const elements = {
+    shell: document.querySelector(".shell"),
+    frequency: document.getElementById("freq"),
+    stationName: document.getElementById("name"),
+    status: document.getElementById("status"),
+    power: document.getElementById("power"),
+    previous: document.getElementById("prev"),
+    next: document.getElementById("next"),
+    stream: document.getElementById("stream"),
+    static: document.getElementById("static"),
+    volume: document.getElementById("volume"),
+    list: document.getElementById("station-listbox"),
+    stationCount: document.getElementById("station-count"),
+    bars: Array.from(document.querySelectorAll(".display__bars span")),
+  };
 
-  let index = 0;
-  let powered = false;
-  let tuning = false;
-  let tuneToken = 0;
-  let tuneTimer = null;
-  let hls = null;
-  let listButtons = [];
+  const state = {
+    index: 0,
+    powered: false,
+    tuning: false,
+    tuneId: 0,
+    tuneTimer: null,
+    hls: null,
+    volume: readVolume(),
+  };
 
-  function station() {
-    return stations[index] || null;
+  const ui = createUi(elements, stations);
+  const audio = createAudioPlayer(elements, state);
+  const visualizer = createVisualizer(elements.bars);
+
+  function clamp(value, min, max) {
+    return Math.min(max, Math.max(min, value));
   }
 
-  function formatFreq(value) {
-    if (value == null || Number.isNaN(Number(value))) return "—.—";
-    return Number(value).toFixed(1);
-  }
-
-  function setStatus(text) {
-    statusEl.textContent = text;
-  }
-
-  function setTuning(on) {
-    tuning = on;
-    shell.dataset.tuning = on ? "1" : "0";
-  }
-
-  function stopStatic() {
-    staticEl.pause();
+  function readVolume() {
     try {
-      staticEl.currentTime = 0;
+      const saved = Number(localStorage.getItem(VOLUME_KEY));
+      return Number.isFinite(saved) ? clamp(saved, 0, 100) : 80;
     } catch (_) {
-      /* ignore */
+      return 80;
     }
   }
 
-  function playStatic() {
-    staticEl.volume = 0.55;
-    const p = staticEl.play();
-    if (p && typeof p.catch === "function") p.catch(() => {});
+  function currentStation() {
+    return stations[state.index] || null;
   }
 
-  function destroyHls() {
-    if (hls) {
-      try {
-        hls.destroy();
-      } catch (_) {
-        /* ignore */
-      }
-      hls = null;
+  function updateUi() {
+    const station = currentStation();
+    const playing = state.powered && (state.tuning || audio.isPlaying());
+
+    elements.shell.dataset.power = state.powered ? "on" : "off";
+    elements.shell.dataset.tuning = state.tuning ? "1" : "0";
+    elements.shell.dataset.playing = playing ? "1" : "0";
+    elements.power.setAttribute("aria-pressed", String(state.powered));
+    elements.previous.disabled = !state.powered || stations.length < 2;
+    elements.next.disabled = !state.powered || stations.length < 2;
+    elements.volume.disabled = !state.powered;
+
+    ui.setSelected(state.index);
+
+    if (!state.powered) {
+      ui.showStation(null);
+      ui.setStatus("Encendé para sintonizar");
+      return;
     }
+
+    if (!station) {
+      ui.showStation(null, "Sin estaciones");
+      ui.setStatus("No hay playlist cargada");
+      return;
+    }
+
+    ui.showStation(station);
   }
 
-  function stopStream() {
-    destroyHls();
-    streamEl.removeAttribute("src");
-    streamEl.load();
+  function setTuning(tuning) {
+    state.tuning = tuning;
+    updateUi();
   }
 
   function clearTuneTimer() {
-    if (tuneTimer) {
-      clearTimeout(tuneTimer);
-      tuneTimer = null;
-    }
+    clearTimeout(state.tuneTimer);
+    state.tuneTimer = null;
   }
 
-  function highlightList() {
-    listButtons.forEach((btn, i) => {
-      const selected = i === index;
-      btn.setAttribute("aria-selected", selected ? "true" : "false");
-      if (selected && listbox) {
-        const btnTop = btn.offsetTop;
-        const btnBottom = btnTop + btn.offsetHeight;
-        const viewTop = listbox.scrollTop;
-        const viewBottom = viewTop + listbox.clientHeight;
-        if (btnTop < viewTop) listbox.scrollTop = btnTop - 8;
-        else if (btnBottom > viewBottom) listbox.scrollTop = btnBottom - listbox.clientHeight + 8;
-      }
-    });
-  }
+  function finishTuning(tuneId) {
+    if (tuneId !== state.tuneId || !state.powered) return;
 
-  function updateDisplay() {
-    const s = station();
-    highlightList();
-    if (!powered) {
-      freqEl.textContent = "—.—";
-      nameEl.textContent = "Radio apagada";
-      setStatus("Encendé para sintonizar");
-      return;
-    }
-    if (!s) {
-      freqEl.textContent = "—.—";
-      nameEl.textContent = "Sin estaciones";
-      setStatus("No hay playlist cargada");
-      return;
-    }
-    freqEl.textContent = formatFreq(s.freq);
-    nameEl.textContent = s.name;
-  }
-
-  function buildList() {
-    if (!listbox || !countEl) return;
-    countEl.textContent = String(stations.length);
-    listbox.replaceChildren();
-    listButtons = stations.map((s, i) => {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "station-list__item";
-      btn.setAttribute("role", "option");
-      btn.setAttribute("aria-selected", i === index ? "true" : "false");
-      btn.innerHTML =
-        `<span class="station-list__freq">${formatFreq(s.freq)}</span>` +
-        `<span class="station-list__name"></span>`;
-      btn.querySelector(".station-list__name").textContent = s.name;
-      btn.addEventListener("click", () => selectStation(i));
-      listbox.appendChild(btn);
-      return btn;
-    });
-  }
-
-  function selectStation(i) {
-    if (i < 0 || i >= stations.length) return;
-    index = i;
-    updateDisplay();
-    if (!powered) {
-      powerOn();
-      return;
-    }
-    tune("seek");
-  }
-
-  function setPowered(on) {
-    powered = on;
-    shell.dataset.power = on ? "on" : "off";
-    powerBtn.setAttribute("aria-pressed", on ? "true" : "false");
-    prevBtn.disabled = !on || stations.length < 2;
-    nextBtn.disabled = !on || stations.length < 2;
-  }
-
-  function isHlsUrl(url) {
-    return /\.m3u8(\?|$)/i.test(url || "");
-  }
-
-  function attachNative(url) {
-    streamEl.src = url;
-    streamEl.load();
-    return streamEl.play();
-  }
-
-  function attachHls(url) {
-    if (window.Hls && window.Hls.isSupported()) {
-      destroyHls();
-      hls = new window.Hls({ enableWorker: true });
-      hls.loadSource(url);
-      hls.attachMedia(streamEl);
-      return new Promise((resolve, reject) => {
-        hls.on(window.Hls.Events.MANIFEST_PARSED, () => {
-          streamEl.play().then(resolve).catch(reject);
-        });
-        hls.on(window.Hls.Events.ERROR, (_e, data) => {
-          if (data && data.fatal) reject(new Error(data.type || "hls error"));
-        });
-      });
-    }
-    if (streamEl.canPlayType("application/vnd.apple.mpegurl")) {
-      return attachNative(url);
-    }
-    return Promise.reject(new Error("HLS no soportado"));
-  }
-
-  function onStreamReady(token) {
-    if (token !== tuneToken || !powered) return;
     clearTuneTimer();
-    stopStatic();
+    audio.stopStatic();
     setTuning(false);
-    const s = station();
-    setStatus(s ? "Al aire" : "Listo");
+    ui.setStatus("Al aire");
+    visualizer.start();
+    updateUi();
   }
 
-  function onStreamFail(token, reason) {
-    if (token !== tuneToken || !powered) return;
+  function failTuning(tuneId, status = "Sin señal") {
+    if (tuneId !== state.tuneId || !state.powered) return;
+
     clearTuneTimer();
-    stopStatic();
+    audio.stopStatic();
+    audio.stopStream();
     setTuning(false);
-    stopStream();
-    setStatus(reason || "No se pudo sintonizar");
+    ui.setStatus(status);
+    visualizer.stop();
+    updateUi();
   }
 
-  function tune(reason) {
-    if (!powered) return;
-    const s = station();
-    if (!s || !s.url) {
-      setStatus("Estación sin URL");
+  function tune(status) {
+    const station = currentStation();
+    if (!state.powered || !station?.url) {
+      ui.setStatus("Estación sin URL");
       return;
     }
 
-    const token = ++tuneToken;
+    const tuneId = ++state.tuneId;
     clearTuneTimer();
-    stopStream();
-    updateDisplay();
+    audio.stopStream();
+    audio.playStatic();
     setTuning(true);
-    playStatic();
-    setStatus(reason === "seek" ? "Sintonizando…" : "Encendiendo…");
+    ui.setStatus(status);
+    visualizer.start();
 
-    tuneTimer = setTimeout(() => {
-      onStreamFail(token, "Sin señal (timeout)");
-    }, TUNE_TIMEOUT_MS);
+    state.tuneTimer = setTimeout(
+      () => failTuning(tuneId, "Sin señal (timeout)"),
+      TUNE_TIMEOUT_MS,
+    );
 
-    const start = isHlsUrl(s.url) ? attachHls(s.url) : attachNative(s.url);
-
-    Promise.resolve(start)
-      .then(() => {
-        if (token !== tuneToken) return;
-        // playing started; wait briefly for actual playback if needed
-        if (!streamEl.paused) {
-          onStreamReady(token);
-          return;
-        }
-        const onPlaying = () => {
-          streamEl.removeEventListener("playing", onPlaying);
-          onStreamReady(token);
-        };
-        streamEl.addEventListener("playing", onPlaying);
-      })
-      .catch(() => {
-        onStreamFail(token, "Sin señal");
-      });
+    audio.playStream(station.url).then(
+      () => finishTuning(tuneId),
+      () => failTuning(tuneId),
+    );
   }
 
   function powerOn() {
     if (!stations.length) {
-      setPowered(false);
-      updateDisplay();
-      setStatus("No hay estaciones en stations.js");
+      ui.setStatus("No hay estaciones en stations.js");
       return;
     }
-    setPowered(true);
-    updateDisplay();
-    tune("power");
+
+    state.powered = true;
+    updateUi();
+    tune("Encendiendo…");
   }
 
   function powerOff() {
-    tuneToken += 1;
+    state.tuneId += 1;
     clearTuneTimer();
-    setTuning(false);
-    stopStatic();
-    stopStream();
-    setPowered(false);
-    updateDisplay();
+    state.powered = false;
+    state.tuning = false;
+    audio.stop();
+    visualizer.stop();
+    updateUi();
   }
 
   function togglePower() {
-    if (powered) powerOff();
+    if (state.powered) powerOff();
     else powerOn();
   }
 
-  function seek(delta) {
-    if (!powered || stations.length < 2) return;
-    index = (index + delta + stations.length) % stations.length;
-    updateDisplay();
-    tune("seek");
+  function selectStation(index, status = "Sintonizando…") {
+    if (index < 0 || index >= stations.length) return;
+
+    state.index = index;
+    updateUi();
+    if (state.powered) tune(status);
+    else powerOn();
   }
 
-  powerBtn.addEventListener("click", togglePower);
-  prevBtn.addEventListener("click", () => seek(-1));
-  nextBtn.addEventListener("click", () => seek(1));
+  function moveStation(direction) {
+    if (!state.powered || stations.length < 2) return;
+    selectStation((state.index + direction + stations.length) % stations.length);
+  }
 
-  streamEl.addEventListener("error", () => {
-    if (!powered || !tuning) return;
-    onStreamFail(tuneToken, "Sin señal");
-  });
+  function bindEvents() {
+    elements.power.addEventListener("click", togglePower);
+    elements.previous.addEventListener("click", () => moveStation(-1));
+    elements.next.addEventListener("click", () => moveStation(1));
+    elements.volume.addEventListener("input", () => {
+      state.volume = Number(elements.volume.value);
+      audio.setVolume(state.volume);
+      try {
+        localStorage.setItem(VOLUME_KEY, String(state.volume));
+      } catch (_) {
+        /* The player still works when browser storage is unavailable. */
+      }
+    });
 
-  document.addEventListener("keydown", (e) => {
-    if (e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
-    if (e.code === "Space") {
-      e.preventDefault();
-      togglePower();
-    } else if (e.code === "ArrowLeft") {
-      e.preventDefault();
-      seek(-1);
-    } else if (e.code === "ArrowRight") {
-      e.preventDefault();
-      seek(1);
+    elements.stream.addEventListener("error", () => {
+      if (state.powered && state.tuning) failTuning(state.tuneId);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (/^(INPUT|TEXTAREA|SELECT)$/.test(event.target?.tagName)) return;
+
+      if (event.code === "Space") {
+        event.preventDefault();
+        togglePower();
+      } else if (event.code === "ArrowLeft") {
+        event.preventDefault();
+        moveStation(-1);
+      } else if (event.code === "ArrowRight") {
+        event.preventDefault();
+        moveStation(1);
+      }
+    });
+  }
+
+  function createUi(dom, radioStations) {
+    const buttons = radioStations.map((station, index) => {
+      const button = document.createElement("button");
+      const frequency = document.createElement("span");
+      const name = document.createElement("span");
+
+      button.type = "button";
+      button.className = "station-list__item";
+      button.setAttribute("role", "option");
+      frequency.className = "station-list__freq";
+      frequency.textContent = formatFrequency(station.freq);
+      name.className = "station-list__name";
+      name.textContent = station.name;
+      button.append(frequency, name);
+      button.addEventListener("click", () => selectStation(index));
+      dom.list.append(button);
+      return button;
+    });
+
+    dom.stationCount.textContent = String(radioStations.length);
+    dom.volume.value = String(state.volume);
+
+    return {
+      setStatus(text) {
+        dom.status.textContent = text;
+      },
+      showStation(station, offName = "Radio apagada") {
+        dom.frequency.textContent = station ? formatFrequency(station.freq) : "—.—";
+        dom.stationName.textContent = station ? station.name : offName;
+      },
+      setSelected(index) {
+        buttons.forEach((button, buttonIndex) => {
+          const selected = buttonIndex === index;
+          button.setAttribute("aria-selected", String(selected));
+          if (selected) keepVisible(button, dom.list);
+        });
+      },
+    };
+  }
+
+  function keepVisible(element, container) {
+    const top = element.offsetTop;
+    const bottom = top + element.offsetHeight;
+    if (top < container.scrollTop) container.scrollTop = top - 8;
+    if (bottom > container.scrollTop + container.clientHeight) {
+      container.scrollTop = bottom - container.clientHeight + 8;
     }
-  });
-
-  // Initial UI
-  buildList();
-  setPowered(false);
-  updateDisplay();
-  if (!stations.length) {
-    setStatus("No hay estaciones en stations.js");
   }
+
+  function formatFrequency(value) {
+    return Number(value).toFixed(1);
+  }
+
+  function createAudioPlayer(dom, playerState) {
+    function clearHls() {
+      playerState.hls?.destroy();
+      playerState.hls = null;
+    }
+
+    function setVolume(percent) {
+      const volume = clamp(percent / 100, 0, 1);
+      dom.stream.volume = volume;
+      dom.static.volume = volume * 0.7;
+    }
+
+    function stopStatic() {
+      dom.static.pause();
+      dom.static.currentTime = 0;
+    }
+
+    function stopStream() {
+      clearHls();
+      dom.stream.pause();
+      dom.stream.removeAttribute("src");
+      dom.stream.load();
+    }
+
+    function stop() {
+      stopStatic();
+      stopStream();
+    }
+
+    function playStatic() {
+      setVolume(playerState.volume);
+      dom.static.play().catch(() => {});
+    }
+
+    function playNative(url) {
+      dom.stream.src = url;
+      dom.stream.load();
+      setVolume(playerState.volume);
+      return dom.stream.play();
+    }
+
+    function playHls(url) {
+      if (window.Hls?.isSupported()) {
+        clearHls();
+        playerState.hls = new window.Hls({ enableWorker: true });
+        playerState.hls.loadSource(url);
+        playerState.hls.attachMedia(dom.stream);
+
+        return new Promise((resolve, reject) => {
+          playerState.hls.on(window.Hls.Events.MANIFEST_PARSED, () => {
+            setVolume(playerState.volume);
+            dom.stream.play().then(resolve, reject);
+          });
+          playerState.hls.on(window.Hls.Events.ERROR, (_event, data) => {
+            if (data?.fatal) reject(new Error(data.type));
+          });
+        });
+      }
+
+      if (dom.stream.canPlayType("application/vnd.apple.mpegurl")) {
+        return playNative(url);
+      }
+      return Promise.reject(new Error("HLS no soportado"));
+    }
+
+    return {
+      isPlaying: () => !dom.stream.paused || !dom.static.paused,
+      setVolume,
+      stop,
+      stopStatic,
+      stopStream,
+      playStatic,
+      playStream: (url) => (
+        /\.m3u8(\?|$)/i.test(url) ? playHls(url) : playNative(url)
+      ),
+    };
+  }
+
+  function createVisualizer(bars) {
+    const minHeight = 6;
+    const maxHeight = 26;
+    let animationFrame = null;
+    let lastTime = 0;
+    let levels = bars.map(() => 0.2);
+
+    function draw(values) {
+      bars.forEach((bar, index) => {
+        const level = clamp(values[index] || 0, 0, 1);
+        bar.style.height = `${minHeight + level * (maxHeight - minHeight)}px`;
+        bar.style.opacity = String(0.45 + level * 0.55);
+      });
+    }
+
+    function tick(time) {
+      const elapsed = Math.min(50, time - lastTime || 16);
+      lastTime = time;
+      levels = levels.map((level, index) => {
+        const target = 0.25 + Math.random() * 0.75;
+        const speed = 0.08 + (index % 3) * 0.03;
+        return level + (target - level) * Math.min(1, speed * elapsed / 16);
+      });
+      draw(levels.map((level, index) => (
+        level * (0.85 + 0.15 * Math.sin(index + time / 180))
+      )));
+      animationFrame = requestAnimationFrame(tick);
+    }
+
+    return {
+      start() {
+        if (animationFrame) return;
+        lastTime = 0;
+        animationFrame = requestAnimationFrame(tick);
+      },
+      stop() {
+        cancelAnimationFrame(animationFrame);
+        animationFrame = null;
+        draw(bars.map(() => 0.08));
+      },
+    };
+  }
+
+  audio.setVolume(state.volume);
+  ui.showStation(null);
+  ui.setStatus(stations.length ? "Encendé para sintonizar" : "No hay estaciones en stations.js");
+  visualizer.stop();
+  updateUi();
+  bindEvents();
 })();

@@ -81,11 +81,6 @@ window.STATIONS = [
     "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/RIVADAVIAAAC_SC"
   },
   {
-    "freq": 93.9,
-    "name": "La Quinta Pata",
-    "url": "http://server3.veemesoft.com.ar:26429/;"
-  },
-  {
     "freq": 94.3,
     "name": "Radio UTN",
     "url": "https://01.solumedia.com.ar:8200/stream"
@@ -94,6 +89,11 @@ window.STATIONS = [
     "freq": 94.7,
     "name": "Loca Suelta",
     "url": "https://stream4.suenas.net/locasuelta"
+  },
+  {
+    "freq": 95.1,
+    "name": "Pulxo",
+    "url": "https://server7.hostradios.com:7073/stream"
   },
   {
     "freq": 95.5,
@@ -117,8 +117,23 @@ window.STATIONS = [
   },
   {
     "freq": 96.7,
+    "name": "Estación Norte",
+    "url": "https://streaming01.shockmedia.com.ar:10941/stream"
+  },
+  {
+    "freq": 96.7,
     "name": "Radio de Folklore",
     "url": "https://stm17.xcast.com.br:7296/stream"
+  },
+  {
+    "freq": 96.7,
+    "name": "Radio Minuto Córdoba",
+    "url": "https://streaming01.shockmedia.com.ar/8706/stream"
+  },
+  {
+    "freq": 96.9,
+    "name": "FM Amistad",
+    "url": "https://streaming.radiosenlinea.com.ar:10915/stream"
   },
   {
     "freq": 97.1,
@@ -234,6 +249,11 @@ window.STATIONS = [
     "freq": 106.3,
     "name": "Gamba",
     "url": "https://servidor1.hostradios.com:8132/stream"
+  },
+  {
+    "freq": 106.5,
+    "name": "Ultra Electronic Radio",
+    "url": "https://streaming.gostreaming.com.ar/8072/stream"
   },
   {
     "freq": 106.9,

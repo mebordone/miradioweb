@@ -73,13 +73,24 @@ El probe acepta 2xx/3xx, páginas HTML de player oficial y content-types de audi
 
 ## Conflictos conocidos (a seguir)
 
+- **88.1** — Nac&Pop: **fuera_capital** (Darregueira, Bs. As.; Garden mal geolocalizado). Excluida del M3U/web.
 - **90.3** — Sonidera (Wikipedia) vs Cosquín Rock (World Radio Map)
-- **95.1** — Vida Córdoba (Wikipedia / LV2) vs Pulxo (RadioCut) vs Cultura (ENACOM histórico)
+- **91.3** — Más Radio; Radio Garden/agregadores como *Kuarteto.com* (alias, no fila dual)
+- **95.1** — filas duales: Vida Córdoba (Wikipedia / LV2) vs Pulxo (RadioCut / Radio Garden); ENACOM histórico Cultura
 - **95.5** — Cosquín Rock vs Sonidera según fuente
-- **96.9** — Día & Noche vs Amistad
+- **95.7** — Impacto Musical: `capital_no_confirmada`
+- **96.7** — Folklore (capital) + hacinamiento Garden: Cadena Space **fuera_capital** (Valle de Punilla); Estación Norte / Minuto `capital_no_confirmada`
+- **96.9** — filas duales: Día & Noche vs FM Amistad (ENACOM / WRM / Radio Garden)
+- **97.5** — Más Radio: **fuera_capital** (repetidora Jesús María). Excluida del M3U/web.
 - **98.9** — La Red vs Suquía Plus
-- **107.3** — Ranquel vs Mujer FM / Urbana
+- **102.3** — Más que música / CBA24 / FM SRT (alias mismo ecosistema SRT)
+- **107.3** — Ranquel: `capital_no_confirmada` (posible Río Cuarto) vs Mujer FM / Urbana en listados
+
+### Marcas de auditoría en `notas`
+
+- `fuera_capital: …` — no es Ciudad de Córdoba; el builder de playlist la omite.
+- `capital_no_confirmada: …` — se conserva en CSV/M3U si tiene stream, pendiente de contraste.
 
 ## Alcance
 
-Solo **FM** y **Ciudad de Córdoba**. No incluye AM, solo-online sin frecuencia, ni Gran Córdoba salvo nota explícita.
+Solo **FM** y **Ciudad de Córdoba**. No incluye AM, solo-online sin frecuencia, ni Gran Córdoba salvo nota explícita. Filas `fuera_capital` quedan documentadas en el CSV pero no entran al dial VLC/web.

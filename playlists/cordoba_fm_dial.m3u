@@ -49,14 +49,14 @@ https://streaming01.shockmedia.com.ar:10891/;
 #EXTINF:-1,93.5 Radio Rivadavia Córdoba
 https://playerservices.streamtheworld.com/api/livestream-redirect/RIVADAVIAAAC_SC
 
-#EXTINF:-1,93.9 La Quinta Pata
-http://server3.veemesoft.com.ar:26429/;
-
 #EXTINF:-1,94.3 Radio UTN
 https://01.solumedia.com.ar:8200/stream
 
 #EXTINF:-1,94.7 Loca Suelta
 https://stream4.suenas.net/locasuelta
+
+#EXTINF:-1,95.1 Pulxo
+https://server7.hostradios.com:7073/stream
 
 #EXTINF:-1,95.5 Cosquín Rock
 https://playerservices.streamtheworld.com/api/livestream-redirect/cosquinrock.mp3
@@ -70,8 +70,17 @@ https://stream4.suenas.net/shoppingclassics
 #EXTINF:-1,96.5 Radio Suquía
 https://streaming01.shockmedia.com.ar:10945/stream
 
+#EXTINF:-1,96.7 Estación Norte
+https://streaming01.shockmedia.com.ar:10941/stream
+
 #EXTINF:-1,96.7 Radio de Folklore
 https://stm17.xcast.com.br:7296/stream
+
+#EXTINF:-1,96.7 Radio Minuto Córdoba
+https://streaming01.shockmedia.com.ar/8706/stream
+
+#EXTINF:-1,96.9 FM Amistad
+https://streaming.radiosenlinea.com.ar:10915/stream
 
 #EXTINF:-1,97.1 Red Aleluya Córdoba
 https://nl.digitalrm.pt:8050/stream
@@ -141,6 +150,9 @@ https://streaming.radiosenlinea.com.ar/9574/stream
 
 #EXTINF:-1,106.3 Gamba
 https://servidor1.hostradios.com:8132/stream
+
+#EXTINF:-1,106.5 Ultra Electronic Radio
+https://streaming.gostreaming.com.ar/8072/stream
 
 #EXTINF:-1,106.9 Modo Radio
 https://streaming01.shockmedia.com.ar/9060/stream

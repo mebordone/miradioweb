@@ -16,6 +16,7 @@ UA = "radios-cordoba-vlc/1.0"
 
 # Curated direct audio overrides (HTML players / status pages → Icecast/STW/etc.)
 DIRECT_BY_FREQ: dict[str, str] = {
+    "88.1": "https://streaming01.shockmedia.com.ar/8794/stream",
     "90.1": "https://streaming.dainusradio.com:9848/stream",
     "90.5": "https://streaming01.shockmedia.com.ar:10603/stream",
     "90.7": "https://streaming01.shockmedia.com.ar:10714/stream",
@@ -42,12 +43,20 @@ DIRECT_BY_FREQ: dict[str, str] = {
     "104.7": "https://streaming.dainusradio.com:2341/stream",
     "105.5": "https://streaming01.shockmedia.com.ar/9676/stream",
     "105.9": "https://streaming.radiosenlinea.com.ar/9574/stream",
+    "106.5": "https://streaming.gostreaming.com.ar/8072/stream",
     "106.9": "https://streaming01.shockmedia.com.ar/9060/stream",
     "107.5": "https://sonic.host-live.com/8250/stream",
 }
 
 DIRECT_BY_NAME: dict[str, str] = {
     "La Quinta Pata": "http://server3.veemesoft.com.ar:26429/;",
+    "Pulxo": "https://server7.hostradios.com:7073/stream",
+    "Cadena Space": "https://live.txrx.stream/stream_2",
+    "Estación Norte": "https://streaming01.shockmedia.com.ar:10941/stream",
+    "Radio Minuto Córdoba": "https://streaming01.shockmedia.com.ar/8706/stream",
+    "FM Amistad": "https://streaming.radiosenlinea.com.ar:10915/stream",
+    "Nac&Pop FM": "https://streaming01.shockmedia.com.ar/8794/stream",
+    "Ultra Electronic Radio": "https://streaming.gostreaming.com.ar/8072/stream",
 }
 
 # Status-page hosts that need an explicit mount (/stream, /;, .mp3, etc.)
@@ -172,6 +181,10 @@ def build_playlist(verify: bool = True) -> tuple[int, int, list[str]]:
 
     candidates = []
     for row in rows:
+        notas = row.get("notas") or ""
+        # Auditoría capital: no meter en el dial emisoras fuera de Ciudad de Córdoba
+        if "fuera_capital" in notas:
+            continue
         url = resolve_url(row)
         if not is_audio_url(url):
             continue

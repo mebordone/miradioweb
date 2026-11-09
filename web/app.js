@@ -2,6 +2,7 @@
   const stations = Array.isArray(window.STATIONS) ? window.STATIONS : [];
   const TUNE_TIMEOUT_MS = 12_000;
   const VOLUME_KEY = "dialfm-volume";
+  const STATION_KEY = "dialfm-last-station";
 
   const elements = {
     shell: document.querySelector(".shell"),
@@ -43,6 +44,40 @@
       return Number.isFinite(saved) ? clamp(saved, 0, 100) : 80;
     } catch (_) {
       return 80;
+    }
+  }
+
+  function stationKey(station) {
+    if (!station) return "";
+    return `${Number(station.freq).toFixed(1)}|${station.name}`;
+  }
+
+  function findStationIndex(saved) {
+    if (!saved || !stations.length) return 0;
+    const byKey = stations.findIndex((station) => stationKey(station) === saved);
+    if (byKey >= 0) return byKey;
+    // Fallback if the playlist renamed slightly: match frequency only.
+    const freq = Number(String(saved).split("|")[0]);
+    if (!Number.isFinite(freq)) return 0;
+    const byFreq = stations.findIndex((station) => Math.abs(Number(station.freq) - freq) < 0.05);
+    return byFreq >= 0 ? byFreq : 0;
+  }
+
+  function readLastStationIndex() {
+    try {
+      return findStationIndex(localStorage.getItem(STATION_KEY));
+    } catch (_) {
+      return 0;
+    }
+  }
+
+  function rememberStation(index = state.index) {
+    const station = stations[index];
+    if (!station) return;
+    try {
+      localStorage.setItem(STATION_KEY, stationKey(station));
+    } catch (_) {
+      /* Storage may be unavailable in private mode. */
     }
   }
 
@@ -168,6 +203,7 @@
     if (index < 0 || index >= stations.length) return;
 
     state.index = index;
+    rememberStation(index);
     updateUi();
     if (state.powered) tune(status);
     else powerOn();
@@ -386,6 +422,7 @@
     };
   }
 
+  state.index = readLastStationIndex();
   audio.setVolume(state.volume);
   ui.showStation(null);
   ui.setStatus(stations.length ? "Encendé para sintonizar" : "No hay estaciones en stations.js");
